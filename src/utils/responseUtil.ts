@@ -6,12 +6,12 @@ interface ApiResponse {
   error?: string;
 }
 
-export function sendSuccessResponse(res: Response, data?: any): void {
+export function sendSuccessResponse(res: Response, statusCode: number, data?: any): void {
   const response: ApiResponse = {
     success: true,
     data: data,
   };
-  res.json(response);
+  res.status(statusCode).json(response);
 }
 
 export function sendErrorResponse(res: Response, statusCode: number, error: string): void {

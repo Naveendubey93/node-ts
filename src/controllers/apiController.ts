@@ -8,8 +8,8 @@ interface ApiResponse {
 }
 
 class ApiController {
-  public static sendSuccessResponse(res: Response, data?: any): void {
-    sendSuccessResponse(res, data);
+  public static sendSuccessResponse(res: Response, statusCode: number, data?: any): void {
+    sendSuccessResponse(res, statusCode, data);
   }
 
   public static sendErrorResponse(res: Response, statusCode: number, error: string): void {

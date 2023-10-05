@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import userService from '../services/userService';
-import { User } from '../models/User';
+import { User } from '../models/user.model';
 import ApiController from '../controllers/apiController';
 
 class UserRoutes {
@@ -21,14 +21,14 @@ class UserRoutes {
 
   private getAllUsers(_req: Request, res: Response): void {
     const users = userService.getAllUsers();
-    ApiController.sendSuccessResponse(res, users);
+    ApiController.sendSuccessResponse(res, 200, users);
   }
 
   private getUserById(req: Request, res: Response): void {
     const id = req.params.id;
     const user = userService.getUserById(id);
     if (user) {
-      ApiController.sendSuccessResponse(res, user);
+      ApiController.sendSuccessResponse(res, 200, user);
     } else {
       ApiController.sendErrorResponse(res, 404, 'User not found');
     }
@@ -37,7 +37,7 @@ class UserRoutes {
   private createUser(req: Request, res: Response): void {
     const user = req.body as User;
     const createdUser = userService.createUser(user);
-    ApiController.sendSuccessResponse(res, createdUser);
+    ApiController.sendSuccessResponse(res, 201, createdUser);
   }
 
   private updateUser(req: Request, res: Response): void {
@@ -45,7 +45,7 @@ class UserRoutes {
     const updatedUser = req.body as User;
     const user = userService.updateUser(id, updatedUser);
     if (user) {
-      ApiController.sendSuccessResponse(res, user);
+      ApiController.sendSuccessResponse(res, 200, user);
     } else {
       ApiController.sendErrorResponse(res, 404, 'User not found');
     }
@@ -55,7 +55,7 @@ class UserRoutes {
     const id = req.params.id;
     const deleted = userService.deleteUser(id);
     if (deleted) {
-      ApiController.sendSuccessResponse(res);
+      ApiController.sendSuccessResponse(res, 200, deleted );
     } else {
       ApiController.sendErrorResponse(res, 404, 'User not found');
     }

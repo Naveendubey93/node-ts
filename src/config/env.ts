@@ -4,7 +4,11 @@ const env = {
   URI: process.env.URI ||
   'mongodb+srv://uat-user:vB7m4gJAc1Qb9KZP@rbac-instance.lj2ns.mongodb.net/hmcluatdb?retryWrites=true&w=majority'
  ||  'mongodb://localhost:27017',
-  mongoDb: process.env.mongoDB || 'nodets-ai'
+  mongoDb: process.env.mongoDB || 'nodets-ai',
+  solaceUrl : "tcp://localhost:55555",
+  solaceUsername :"admin",
+  solacePassword: "admin",
+  solaceVpn: "default",
 };
 
 export default env;

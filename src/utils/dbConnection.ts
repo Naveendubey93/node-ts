@@ -1,48 +1,63 @@
-import { MongoClient, MongoClientOptions, Db } from 'mongodb';
+import mongoose, { Connection, Mongoose } from 'mongoose';
+
 import env from '../config/env';
 
 class Database {
-  private client: MongoClient;
-  private db: Db | null;
+  private mongooseInstance: Mongoose;
+  private connection: Connection | null = null;
 
-  constructor() {
-    const uri = env.URI;
-    const options: MongoClientOptions = {};
-
-    // @ts-ignore
-    options.useUnifiedTopology = true;
-    
-    this.client = new MongoClient(uri, options);
-    this.db = null;
+  constructor(private dbUri: string) {
+    this.mongooseInstance = mongoose;
+    this.mongooseInstance.Promise = global.Promise;
   }
 
   async connectToMongo(): Promise<void> {
     try {
-      await this.client.connect();
-      this.db = this.client.db();
-      console.log('Connected to MongoDB');
+      if (!this.connection) {
+        // this.mongooseInstance = mongoose;
+        // this.mongooseInstance.Promise = global.Promise; // Use native Node.js promises
+
+         this.connection = await this.mongooseInstance.createConnection(this.dbUri, {
+          // useNewUrlParser: true,
+          // useUnifiedTopology: true,
+        });
+      }
     } catch (error) {
-      console.error('Failed to connect to MongoDB', error);
-      throw error;
+      throw new Error(`Error connecting to the database: ${error}`);
     }
   }
 
-  getDb(): Db {
-    if (!this.db) {
-      throw new Error('Database connection not established');
+
+ getDB(): Connection {
+    if (!this.connection) {
+      throw new Error('Database connection has not been established.');
     }
-    return this.db;
+    return this.connection;
   }
 
   async disconnect(): Promise<void> {
-    try {
-      await this.client.close();
-      console.log('Disconnected from MongoDB');
-    } catch (error) {
-      console.error('Failed to disconnect from MongoDB', error);
-      throw error;
+    if (this.connection) {
+      await this.connection.close();
     }
   }
 }
 
-export default new Database();
+const dbUri = 'mongodb://127.0.0.1:27017/mydatabase'; // Replace with your MongoDB URI
+const database = new Database(dbUri);
+
+// async function start() {
+//   try {
+//     await database.connectToMongo();
+//     const db = database.getDB();
+//     console.log(`Starting db connection`);
+//     // Use db for database operations
+
+//     // When finished, disconnect from the database
+//     await database.disconnect();
+//   } catch (error) {
+//     console.error(error);
+//   }
+// }
+
+// start();
+export default new Database(dbUri);

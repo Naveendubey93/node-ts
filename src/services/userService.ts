@@ -1,4 +1,4 @@
-import { User } from '../models/User';
+import { User } from '../models/user.model';
 
 class UserService {
   private users: User[];
